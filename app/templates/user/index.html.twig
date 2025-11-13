@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'user.title'|trans }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>{{ 'user.title'|trans }}</h1>
+            <a href="{{ path('app_user_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i>
+                {{ 'user.action.add_new'|trans }}
+            </a>
+        </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>{{ 'user.field.id'|trans }}</th>
+                                <th>{{ 'user.field.name'|trans }}</th>
+                                <th>{{ 'user.field.email'|trans }}</th>
+                                <th>{{ 'user.field.phone'|trans }}</th>
+                                <th>{{ 'user.field.roles'|trans }}</th>
+                                <th>{{ 'user.field.status'|trans }}</th>
+                                <th>{{ 'common.actions'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.fullName }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.phone ?? '-' }}</td>
+                                    <td>
+                                        {% for role in user.roles %}
+                                            {% if role != 'ROLE_USER' %}
+                                                <span class="badge bg-secondary">{{ role|replace({'ROLE_': ''})|title }}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% if user.isActive %}
+                                            <span class="badge bg-success">{{ 'user.status.active'|trans }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ 'user.status.inactive'|trans }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-info" title="{{ 'action.view'|trans }}">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-warning" title="{{ 'action.edit'|trans }}">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center">{{ 'user.no_users_found'|trans }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

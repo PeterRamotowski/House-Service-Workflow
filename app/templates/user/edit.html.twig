@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'user.edit.title'|trans }}
+    -
+    {{ user.fullName }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{{ path('app_user_index') }}">{{ 'user.title'|trans }}</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ path('app_user_show', {'id': user.id}) }}">{{ user.fullName }}</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{ 'action.edit'|trans }}</li>
+                    </ol>
+                </nav>
+                <h1>{{ 'user.edit.header'|trans({'%name%': user.fullName}) }}</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                {% if app.user.id == user.id and 'ROLE_ADMIN' in user.roles %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>{{ 'common.warning'|trans }}:</strong>
+                        {{ 'user.edit.own_account_warning'|trans }}
+                    </div>
+                {% endif %}
+
+                <div class="card">
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_row(form.firstName) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_row(form.lastName) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_row(form.email) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_row(form.phone) }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_row(form.plainPassword) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_row(form.roles) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_row(form.isActive) }}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                {{ 'action.back'|trans }}
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i>
+                                {{ 'user.action.update'|trans }}
+                            </button>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                {% if app.user.id == user.id %}
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>{{ 'common.note'|trans }}:</strong>
+                        {{ 'user.edit.own_account_note'|trans }}
+                    </div>
+                {% endif %}
+
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">{{ 'common.danger_zone'|trans }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">{{ 'user.delete.permanent_warning'|trans }}</p>
+                        <form method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" onsubmit="return confirm('{{ 'user.delete.confirm'|trans }}');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                            <button type="submit" class="btn btn-danger w-100" {% if app.user.id == user.id %} title="{{ 'user.delete.own_account_restriction'|trans }}" {% endif %}>
+                                <i class="bi bi-trash"></i>
+                                {{ 'user.action.delete'|trans }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

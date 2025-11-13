@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ house.name }}
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">{{ house.name }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ path('app_house_index') }}" class="btn btn-sm btn-outline-secondary me-2">
+                <i class="bi bi-arrow-left"></i>
+                {{ 'action.back_to_list'|trans }}
+            </a>
+            {% if is_granted('ROLE_MANAGER') or house.owner == app.user %}
+                <a href="{{ path('app_house_edit', {'id': house.id}) }}" class="btn btn-sm btn-warning">
+                    <i class="bi bi-pencil"></i>
+                    {{ 'action.edit'|trans }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'house.section.information'|trans }}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">{{ 'house.field.address'|trans }}:</dt>
+                        <dd class="col-sm-8">{{ house.address }}</dd>
+
+                        {% if house.city %}
+                            <dt class="col-sm-4">{{ 'house.field.city'|trans }}:</dt>
+                            <dd class="col-sm-8">{{ house.city }}</dd>
+                        {% endif %}
+
+                        {% if house.postalCode %}
+                            <dt class="col-sm-4">{{ 'house.field.postal_code'|trans }}:</dt>
+                            <dd class="col-sm-8">{{ house.postalCode }}</dd>
+                        {% endif %}
+
+                        {% if house.country %}
+                            <dt class="col-sm-4">{{ 'house.field.country'|trans }}:</dt>
+                            <dd class="col-sm-8">{{ house.country }}</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-4">{{ 'house.bedrooms'|trans }}:</dt>
+                        <dd class="col-sm-8">{{ house.bedrooms }}</dd>
+
+                        <dt class="col-sm-4">{{ 'house.bathrooms'|trans }}:</dt>
+                        <dd class="col-sm-8">{{ house.bathrooms }}</dd>
+
+                        <dt class="col-sm-4">{{ 'house.field.square_meters'|trans }}:</dt>
+                        <dd class="col-sm-8">{{ house.squareMeters }}
+                            {{ 'common.square_meters_unit'|trans }}</dd>
+
+                        <dt class="col-sm-4">{{ 'house.field.owner'|trans }}:</dt>
+                        <dd class="col-sm-8">{{ house.owner.fullName }}</dd>
+
+                        {% if house.owners|length > 0 %}
+                            <dt class="col-sm-4">{{ 'house.field.co_owners'|trans }}:</dt>
+                            <dd class="col-sm-8">
+                                {% for owner in house.owners %}
+                                    <span class="badge bg-info">{{ owner.fullName }}</span>
+                                {% endfor %}
+                            </dd>
+                        {% endif %}
+
+                        <dt class="col-sm-4">{{ 'house.field.created'|trans }}:</dt>
+                        <dd class="col-sm-8">{{ house.createdAt|date('Y-m-d H:i') }}</dd>
+                    </dl>
+
+                    {% if house.description %}
+                        <h6 class="mt-4">{{ 'house.field.description'|trans }}:</h6>
+                        <p>{{ house.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ 'house.section.service_requests'|trans }}</h5>
+                    {% if is_granted('ROLE_MANAGER') %}
+                        <a href="{{ path('app_service_request_new', {'house': house.id}) }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus"></i>
+                            {{ 'action.new_service_request'|trans }}
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if house.serviceRequests is empty %}
+                        <p class="text-muted">{{ 'house.section.no_requests'|trans }}</p>
+                    {% else %}
+                        <div class="list-group">
+                            {% for request in house.serviceRequests|slice(0, 10) %}
+                                <a href="{{ path('app_service_request_show', {'id': request.id}) }}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ ('service.type.' ~ request.serviceType)|trans }}</h6>
+                                        <small>{{ request.scheduledDate|date('Y-m-d') }}</small>
+                                    </div>
+                                    <p class="mb-1">
+                                        <span class="badge workflow-badge
+                                            {% if request.currentPlace == 'completed' %}bg-success
+                                            {% elseif request.currentPlace == 'in_progress' %}bg-warning text-dark
+                                            {% elseif request.currentPlace in ['scheduled', 'assigned'] %}bg-primary
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ ('workflow.state.' ~ request.currentPlace)|trans }}
+                                        </span>
+                                    </p>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        {% if house.serviceRequests|length > 10 %}
+                            <p class="text-muted mt-2 mb-0">
+                                <small>{{ 'house.section.showing_requests'|trans({'%count%': 10, '%total%': house.serviceRequests|length}) }}</small>
+                            </p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

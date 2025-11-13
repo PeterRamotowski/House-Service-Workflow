@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'nav.houses'|trans }}
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">{{ 'nav.houses'|trans }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            {% if is_granted('ROLE_MANAGER') %}
+                <a href="{{ path('app_house_new') }}" class="btn btn-sm btn-success">
+                    <i class="bi bi-plus-circle"></i>
+                    {{ 'action.add_new_house'|trans }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if houses is empty %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            {{ 'house.no_houses_found'|trans }}
+        </div>
+    {% else %}
+        <div class="row">
+            {% for house in houses %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ house.name }}</h5>
+                            <p class="card-text text-muted">
+                                <i class="bi bi-geo-alt"></i>
+                                {{ house.address }}<br>
+                                {% if house.city %}
+                                    {{ house.city }},
+                                {% endif %}
+                                {% if house.country %}
+                                    {{ house.country }}
+                                {% endif %}
+                            </p>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <i class="bi bi-door-closed"></i>
+                                    {{ house.bedrooms }}
+                                    {{ 'house.bedrooms'|trans }}</li>
+                                <li>
+                                    <i class="bi bi-droplet"></i>
+                                    {{ house.bathrooms }}
+                                    {{ 'house.bathrooms'|trans }}</li>
+                                <li>
+                                    <i class="bi bi-rulers"></i>
+                                    {{ house.squareMeters }}
+                                    {{ 'common.square_meters_unit'|trans }}</li>
+                            </ul>
+                            <p class="card-text">
+                                <small class="text-muted">{{ 'house.owner'|trans }}:
+                                    {{ house.owner.fullName }}</small>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="{{ path('app_house_show', {'id': house.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                                {{ 'action.view_details'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

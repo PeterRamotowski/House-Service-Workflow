@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'nav.dashboard'|trans }}
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">{{ 'nav.dashboard'|trans }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            {% if is_granted('ROLE_MANAGER') %}
+                <a href="{{ path('app_service_request_new') }}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    {{ 'action.new_service_request'|trans }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-calendar-check"></i>
+                        {{ 'dashboard.upcoming'|trans }}
+                    </h5>
+                    <p class="card-text display-6">{{ upcoming_requests|filter(r => r.currentPlace in ['scheduled', 'assigned'])|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-hourglass-split"></i>
+                        {{ 'dashboard.in_progress'|trans }}
+                    </h5>
+                    <p class="card-text display-6">{{ upcoming_requests|filter(r => r.currentPlace == 'in_progress')|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-eye"></i>
+                        {{ 'dashboard.review'|trans }}
+                    </h5>
+                    <p class="card-text display-6">{{ upcoming_requests|filter(r => r.currentPlace == 'review')|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-check-circle"></i>
+                        {{ 'dashboard.completed_today'|trans }}
+                    </h5>
+                    <p class="card-text display-6">{{ upcoming_requests|filter(r => r.currentPlace == 'completed' and r.completedDate|date('Y-m-d') == 'now'|date('Y-m-d'))|length }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mb-3">{{ 'dashboard.upcoming_service_requests'|trans }}</h3>
+
+    {% if upcoming_requests is empty %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            {{ 'dashboard.no_upcoming_requests'|trans }}
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>{{ 'service_request.field.house'|trans }}</th>
+                        <th>{{ 'service_request.field.service_type'|trans }}</th>
+                        <th>{{ 'service_request.field.scheduled_date'|trans }}</th>
+                        <th>{{ 'service_request.field.status'|trans }}</th>
+                        <th>{{ 'service_request.field.assigned_cleaner'|trans }}</th>
+                        <th>{{ 'service_request.field.priority'|trans }}</th>
+                        <th>{{ 'common.actions'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in upcoming_requests %}
+                        <tr>
+                            <td>{{ request.house.name }}</td>
+                            <td>{{ request.serviceType|replace({'_': ' '})|title }}</td>
+                            <td>{{ request.scheduledDate|date('Y-m-d H:i') }}</td>
+                            <td>
+                                <span class="badge workflow-badge
+                                    {% if request.currentPlace == 'completed' %}bg-success
+                                    {% elseif request.currentPlace == 'in_progress' %}bg-warning
+                                    {% elseif request.currentPlace in ['scheduled', 'assigned'] %}bg-primary
+                                    {% elseif request.currentPlace == 'review' %}bg-info
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ ('workflow.state.' ~ request.currentPlace)|trans }}
+                                </span>
+                            </td>
+                            <td>{{ request.assignedCleaner ? request.assignedCleaner.fullName : ('service_request.not_assigned'|trans) }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if request.priority == 'urgent' %}bg-danger
+                                    {% elseif request.priority == 'high' %}bg-warning
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ ('priority.' ~ request.priority)|trans }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_service_request_show', {'id': request.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                    {{ 'action.view'|trans }}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

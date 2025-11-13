@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'service_request.title'|trans }}
+    #{{ service_request.id }}
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">{{ 'service_request.title'|trans }}
+            #{{ service_request.id }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ path('app_service_request_index') }}" class="btn btn-sm btn-outline-secondary me-2">
+                <i class="bi bi-arrow-left"></i>
+                {{ 'action.back_to_list'|trans }}
+            </a>
+            {% if is_granted('ROLE_MANAGER') %}
+                <a href="{{ path('app_service_request_edit', {'id': service_request.id}) }}" class="btn btn-sm btn-warning">
+                    <i class="bi bi-pencil"></i>
+                    {{ 'action.edit'|trans }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if service_request.currentPlace == 'scheduled' and service_request.assignedCleaner is null and is_granted('ROLE_CLEANER') and not is_granted('ROLE_MANAGER') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-hand-thumbs-up"></i>
+            {{ 'service_request.task_available_alert'|trans }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'service_request.service_details'|trans }}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">{{ 'service_request.field.house'|trans }}:</dt>
+                        <dd class="col-sm-9">
+                            <a href="{{ path('app_house_show', {'id': service_request.house.id}) }}">
+                                {{ service_request.house.name }}
+                            </a>
+                        </dd>
+
+                        <dt class="col-sm-3">{{ 'service_request.field.service_type'|trans }}:</dt>
+                        <dd class="col-sm-9">{{ ('service.type.' ~ service_request.serviceType)|trans }}</dd>
+
+                        <dt class="col-sm-3">{{ 'service_request.field.status'|trans }}:</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge workflow-badge
+                                {% if service_request.currentPlace == 'completed' %}bg-success
+                                {% elseif service_request.currentPlace == 'in_progress' %}bg-warning text-dark
+                                {% elseif service_request.currentPlace in ['scheduled', 'assigned'] %}bg-primary
+                                {% elseif service_request.currentPlace == 'review' %}bg-info text-dark
+                                {% elseif service_request.currentPlace == 'cancelled' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ ('workflow.state.' ~ service_request.currentPlace)|trans }}
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3">{{ 'service_request.field.priority'|trans }}:</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge
+                                {% if service_request.priority == 'urgent' %}bg-danger
+                                {% elseif service_request.priority == 'high' %}bg-warning text-dark
+                                {% else %}bg-secondary{% endif %}">
+                                {{ ('priority.' ~ service_request.priority)|trans }}
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3">{{ 'service_request.field.scheduled_date'|trans }}:</dt>
+                        <dd class="col-sm-9">{{ service_request.scheduledDate|date('Y-m-d H:i') }}</dd>
+
+                        <dt class="col-sm-3">{{ 'service_request.field.assigned_cleaner'|trans }}:</dt>
+                        <dd class="col-sm-9">{{ service_request.assignedCleaner ? service_request.assignedCleaner.fullName : ('service_request.not_assigned'|trans) }}</dd>
+
+                        {% if service_request.completedDate %}
+                            <dt class="col-sm-3">{{ 'service_request.field.completed_date'|trans }}:</dt>
+                            <dd class="col-sm-9">{{ service_request.completedDate|date('Y-m-d H:i') }}</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-3">{{ 'service_request.field.estimated_duration'|trans }}:</dt>
+                        <dd class="col-sm-9">{{ service_request.estimatedDuration ? (service_request.estimatedDuration ~ ' ' ~ ('common.hours'|trans)) : ('service_request.not_specified'|trans) }}</dd>
+
+                        {% if service_request.actualDuration %}
+                            <dt class="col-sm-3">{{ 'service_request.field.actual_duration'|trans }}:</dt>
+                            <dd class="col-sm-9">{{ service_request.actualDuration }}
+                                {{ 'common.hours'|trans }}</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-3">{{ 'service_request.field.created_by'|trans }}:</dt>
+                        <dd class="col-sm-9">{{ service_request.createdBy.fullName }}</dd>
+
+                        <dt class="col-sm-3">{{ 'service_request.field.created_at'|trans }}:</dt>
+                        <dd class="col-sm-9">{{ service_request.createdAt|date('Y-m-d H:i') }}</dd>
+                    </dl>
+
+                    {% if service_request.description %}
+                        <h6 class="mt-4">{{ 'service_request.field.description'|trans }}:</h6>
+                        <p>{{ service_request.description }}</p>
+                    {% endif %}
+
+                    {% if service_request.notes %}
+                        <h6 class="mt-4">{{ 'service_request.field.notes'|trans }}:</h6>
+                        <p>{{ service_request.notes }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if service_request.workflowHistory is not empty %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'service_request.workflow_history'|trans }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            {% for entry in service_request.workflowHistory|reverse %}
+                                <div class="mb-3 pb-3 border-bottom">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>{{ ('transition.' ~ entry.transition)|trans }}</strong>
+                                        <small class="text-muted">{{ entry.timestamp }}</small>
+                                    </div>
+                                    <div class="text-muted">
+                                        <small>
+                                            {{ 'common.from'|trans }}:
+                                            <span class="badge bg-secondary">{{ ('workflow.state.'~entry.from)|trans }}</span>
+                                            {{ 'common.to'|trans }}:
+                                            <span class="badge bg-primary">{{ ('workflow.state.'~entry.to)|trans }}</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'service_request.available_actions'|trans }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if enabled_transitions is empty %}
+                        <p class="text-muted">{{ 'service_request.no_actions_available'|trans }}</p>
+                    {% else %}
+                        {% for transition in enabled_transitions %}
+                            <form method="post" action="{{ path('app_service_request_transition', {'id': service_request.id, 'transition': transition}) }}" class="mb-2">
+                                <button type="submit" class="btn btn-sm w-100
+                                    {% if transition == 'complete' %}btn-success
+                                    {% elseif transition == 'cancel' %}btn-danger
+                                    {% elseif transition in ['approve', 'start_work'] %}btn-primary
+                                    {% elseif transition == 'self_assign' %}btn-info
+                                    {% elseif transition == 'reject' %}btn-warning
+                                    {% else %}btn-secondary{% endif %}">
+                                    <i class="bi
+                                    {% if transition == 'self_assign' %}bi-hand-thumbs-up
+                                    {% else %}bi-arrow-right-circle{% endif %}"></i>
+                                    {{ ('transition.' ~ transition)|trans }}
+                                </button>
+                            </form>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'service_request.workflow_states'|trans }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for place in workflow_places %}
+                            <div class="list-group-item {% if place == service_request.currentPlace %}list-group-item-primary{% endif %}">
+                                {% if place == service_request.currentPlace %}
+                                    <i class="bi bi-check-circle-fill"></i>
+                                {% else %}
+                                    <i class="bi bi-circle"></i>
+                                {% endif %}
+                                {{ ('workflow.state.' ~ place)|trans }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

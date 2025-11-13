@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block title %}
+                {{ 'app.name'|trans }}
+            {% endblock %}
+        </title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🏠</text></svg>">
+
+        {% block stylesheets %}
+            {{ vite_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ vite_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+        {% if app.user %}
+            <div class="container-fluid">
+                <div
+                    class="row">
+                    <!-- Sidebar -->
+                    <nav class="col-md-2 d-md-block sidebar">
+                        <div class="position-sticky pt-3">
+                            <h5 class="px-3 mb-3">{{ 'app.short_name'|trans }}</h5>
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.get('_route') == 'app_dashboard' %}active{% endif %}" href="{{ path('app_dashboard') }}">
+                                        <i class="bi bi-speedometer2"></i>
+                                        {{ 'nav.dashboard'|trans }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if 'app_house' in app.request.get('_route') %}active{% endif %}" href="{{ path('app_house_index') }}">
+                                        <i class="bi bi-house"></i>
+                                        {{ 'nav.houses'|trans }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if 'app_service_request' in app.request.get('_route') %}active{% endif %}" href="{{ path('app_service_request_index') }}">
+                                        <i class="bi bi-list-task"></i>
+                                        {{ 'nav.service_requests'|trans }}
+                                    </a>
+                                </li>
+                                {% if is_granted('ROLE_MANAGER') %}
+                                    <li class="nav-item">
+                                        <hr class="my-2">
+                                        <h6 class="sidebar-heading px-3 mt-3 mb-1 text-muted">
+                                            <span>{{ 'nav.management'|trans }}</span>
+                                        </h6>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_house_new') }}">
+                                            <i class="bi bi-plus-circle"></i>
+                                            {{ 'action.new_house'|trans }}
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_service_request_new') }}">
+                                            <i class="bi bi-plus-circle"></i>
+                                            {{ 'action.new_service_request'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <li class="nav-item">
+                                        <a class="nav-link {% if 'app_user' in app.request.get('_route') %}active{% endif %}" href="{{ path('app_user_index') }}">
+                                            <i class="bi bi-people"></i>
+                                            {{ 'user.title'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+
+                            <hr>
+
+                            <div class="px-3">
+                                <p class="small mb-1">
+                                    <strong>{{ app.user.fullName }}</strong>
+                                </p>
+                                <p class="small text-muted mb-2">{{ app.user.email }}</p>
+                                {% for role in app.user.roles %}
+                                    {% if role != 'ROLE_USER' %}
+                                        <span class="badge bg-secondary mb-1">{{ role|replace({'ROLE_': ''})|title }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <div class="mt-2">
+                                    <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-danger w-100">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        {{ 'action.logout'|trans }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <!-- Main content -->
+                    <main class="col-md-10 ms-sm-auto px-md-4 main-content">
+                        <div class="pt-3 pb-2 mb-3">
+                            {% for label, messages in app.flashes %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+
+                            {% block body %}{% endblock %}
+                        </div>
+                    </main>
+                </div>
+            </div>
+        {% else %}
+            <main class="container mt-5">
+                {% block body_public %}{% endblock %}
+            </main>
+            {% endif %}
+        </body>
+    </html>

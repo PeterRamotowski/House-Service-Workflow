@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'service_request.new'|trans }}
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">{{ 'service_request.create'|trans }}</h1>
+        <a href="{{ path('app_service_request_index') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            {{ 'action.back_to_list'|trans }}
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form) }}
+                    {{ form_row(form.house) }}
+                    {{ form_row(form.serviceType) }}
+                    {{ form_row(form.scheduledDate) }}
+                    {{ form_row(form.assignedCleaner) }}
+                    {{ form_row(form.priority) }}
+                    {{ form_row(form.estimatedDuration) }}
+                    {{ form_row(form.description) }}
+                    {{ form_row(form.notes) }}
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i>
+                            {{ 'service_request.create'|trans }}
+                        </button>
+                        <a href="{{ path('app_service_request_index') }}" class="btn btn-secondary">{{ 'action.cancel'|trans }}</a>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

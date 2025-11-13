@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ user.fullName }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{{ path('app_user_index') }}">{{ 'user.title'|trans }}</a>
+                        </li>
+                        <li class="breadcrumb-item active">{{ user.fullName }}</li>
+                    </ol>
+                </nav>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1>{{ user.fullName }}</h1>
+                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-primary">
+                        <i class="bi bi-pencil"></i>
+                        {{ 'user.action.edit'|trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'user.section.information'|trans }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 30%;">{{ 'user.field.id'|trans }}:</th>
+                                    <td>{{ user.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ 'user.field.email'|trans }}:</th>
+                                    <td>{{ user.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ 'user.field.first_name'|trans }}:</th>
+                                    <td>{{ user.firstName }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ 'user.field.last_name'|trans }}:</th>
+                                    <td>{{ user.lastName }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ 'user.field.phone'|trans }}:</th>
+                                    <td>{{ user.phone ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ 'user.field.status'|trans }}:</th>
+                                    <td>
+                                        {% if user.isActive %}
+                                            <span class="badge bg-success">{{ 'user.status.active'|trans }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ 'user.status.inactive'|trans }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'user.section.roles_permissions'|trans }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>{{ 'user.field.assigned_roles'|trans }}:</h6>
+                        <div class="mb-3">
+                            {% for role in user.roles %}
+                                <span class="badge bg-primary me-1 mb-1">
+                                    {{ role|replace({'ROLE_': ''})|title }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'user.section.owned_properties'|trans }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if user.ownedHouses|length > 0 %}
+                            <ul class="list-group list-group-flush">
+                                {% for house in user.ownedHouses %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ house.name }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ house.address }}</small>
+                                        </div>
+                                        <a href="{{ path('app_house_show', {'id': house.id}) }}" class="btn btn-sm btn-outline-primary">
+                                            {{ 'action.view'|trans }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted mb-0">{{ 'user.no_properties_owned'|trans }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ path('app_user_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i>
+                {{ 'action.back_to_list'|trans }}
+            </a>
+        </div>
+    </div>
+{% endblock %}
