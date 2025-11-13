@@ -14,6 +14,8 @@ Instead of hardcoding state transitions and rules in PHP classes, this project k
 - **Documentation**: The YAML file serves as living documentation that stays in sync with actual behavior
 - **Version control**: Track how your business process evolves over time through git history of a single configuration file
 
+<img width="100%" height="auto" alt="Workflow preview" src="https://github.com/user-attachments/assets/f1a24354-8e9c-47c1-b37a-b8509d2df828" />
+
 ## The service request workflow
 
 This application manages holiday house cleaning services through a multi-step process with different user roles:
