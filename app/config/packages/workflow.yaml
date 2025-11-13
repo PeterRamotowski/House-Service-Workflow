@@ -1,0 +1,109 @@
+framework:
+    workflows:
+        service_request:
+            type: 'state_machine'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: 'method'
+                property: 'currentPlace'
+            supports:
+                - App\ServiceManagement\Domain\ServiceRequest
+            initial_marking: draft
+            places:
+                draft:
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                pending_approval:
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                approved:
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                scheduled:
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN, ROLE_CLEANER]
+                assigned:
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN, ROLE_CLEANER]
+                in_progress:
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN, ROLE_CLEANER]
+                review:
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                completed:
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN, ROLE_OWNER]
+                cancelled:
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                archived:
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+            transitions:
+                submit:
+                    from: draft
+                    to: pending_approval
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                approve:
+                    from: pending_approval
+                    to: approved
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                reject:
+                    from: pending_approval
+                    to: draft
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                schedule:
+                    from: approved
+                    to: scheduled
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                assign:
+                    from: scheduled
+                    to: assigned
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                self_assign:
+                    from: scheduled
+                    to: assigned
+                    metadata:
+                        allowed_roles: [ROLE_CLEANER]
+                start_work:
+                    from: assigned
+                    to: in_progress
+                    metadata:
+                        allowed_roles: [ROLE_CLEANER]
+                submit_for_review:
+                    from: in_progress
+                    to: review
+                    metadata:
+                        allowed_roles: [ROLE_CLEANER]
+                request_changes:
+                    from: review
+                    to: in_progress
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                complete:
+                    from: review
+                    to: completed
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                cancel:
+                    from: [draft, pending_approval, approved, scheduled, assigned]
+                    to: cancelled
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                archive:
+                    from: [completed, cancelled]
+                    to: archived
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
+                reopen:
+                    from: [cancelled, completed]
+                    to: approved
+                    metadata:
+                        allowed_roles: [ROLE_MANAGER, ROLE_ADMIN]
