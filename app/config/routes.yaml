@@ -1,0 +1,23 @@
+controllers_dashboard:
+    resource:
+        path: ../src/Dashboard/UI/
+        namespace: App\Dashboard\UI
+    type: attribute
+
+controllers_identity_access:
+    resource:
+        path: ../src/IdentityAccess/UI/
+        namespace: App\IdentityAccess\UI
+    type: attribute
+
+controllers_property:
+    resource:
+        path: ../src/Property/UI/
+        namespace: App\Property\UI
+    type: attribute
+
+controllers_service_management:
+    resource:
+        path: ../src/ServiceManagement/UI/
+        namespace: App\ServiceManagement\UI
+    type: attribute

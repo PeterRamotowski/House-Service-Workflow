@@ -1,0 +1,29 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $serviceRequestWorkflow: '@state_machine.service_request'
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/IdentityAccess/'
+            - '../src/Property/'
+            - '../src/ServiceManagement/'
+            - '../src/Kernel.php'
+
+    App\IdentityAccess\:
+        resource: '../src/IdentityAccess/'
+
+    App\Property\:
+        resource: '../src/Property/'
+
+    App\ServiceManagement\:
+        resource: '../src/ServiceManagement/'
+
+    App\Dashboard\:
+        resource: '../src/Dashboard/'
