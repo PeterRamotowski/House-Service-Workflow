@@ -1,0 +1,293 @@
+# Application Messages
+app:
+    name: 'House service management'
+    short_name: 'House service'
+
+# Navigation
+nav:
+    dashboard: 'Dashboard'
+    houses: 'Houses'
+    service_requests: 'Service requests'
+    management: 'Management'
+    new_house: 'New house'
+    new_service_request: 'New service request'
+    logout: 'Logout'
+
+# Common Actions
+action:
+    view: 'View'
+    edit: 'Edit'
+    delete: 'Delete'
+    create: 'Create'
+    update: 'Update'
+    save: 'Save'
+    cancel: 'Cancel'
+    submit: 'Submit'
+    back: 'Back'
+    back_to_list: 'Back to list'
+    back_to_details: 'Back to details'
+    create_new: 'Create new'
+    add_new: 'Add new'
+    take_task: 'Take task'
+    new_house: 'New house'
+    new_service_request: 'New service request'
+    add_new_house: 'Add new house'
+    view_details: 'View details'
+    logout: 'Logout'
+
+# Workflow States
+workflow:
+    state:
+        draft: 'Draft'
+        pending_approval: 'Pending approval'
+        approved: 'Approved'
+        scheduled: 'Scheduled'
+        assigned: 'Assigned'
+        in_progress: 'In progress'
+        review: 'Review'
+        completed: 'Completed'
+        cancelled: 'Cancelled'
+        archived: 'Archived'
+    error:
+        no_permission: 'You do not have permission to perform this action. Required roles: %roles%'
+        start_work_assigned_only: 'You can only start work on requests assigned to you.'
+        submit_review_assigned_only: 'You can only submit requests assigned to you for review.'
+        cleaner_cannot_assign: 'Cleaners cannot assign work to others. Use self-assignment instead.'
+    
+# Workflow Transitions
+transition:
+    submit: 'Submit'
+    approve: 'Approve'
+    reject: 'Reject'
+    schedule: 'Schedule'
+    assign: 'Assign'
+    self_assign: 'Self assign'
+    start_work: 'Start work'
+    submit_for_review: 'Submit for review'
+    request_changes: 'Request changes'
+    complete: 'Complete'
+    cancel: 'Cancel'
+    archive: 'Archive'
+    reopen: 'Reopen'
+
+# Service Types
+service:
+    type:
+        cleaning: 'Cleaning'
+        deep_cleaning: 'Deep cleaning'
+        maintenance: 'Maintenance'
+        inspection: 'Inspection'
+        laundry: 'Laundry'
+        garden_work: 'Garden work'
+        pool_maintenance: 'Pool maintenance'
+
+# Priority Levels
+priority:
+    low: 'Low'
+    normal: 'Normal'
+    high: 'High'
+    urgent: 'Urgent'
+
+# Roles
+role:
+    user: 'User'
+    admin: 'Admin'
+    manager: 'Manager'
+    cleaner: 'Cleaner'
+    owner: 'Owner'
+
+# Dashboard
+dashboard:
+    title: 'Dashboard'
+    upcoming: 'Upcoming'
+    in_progress: 'In progress'
+    review: 'Review'
+    completed_today: 'Completed today'
+    upcoming_service_requests: 'Upcoming service requests'
+    no_upcoming_requests: 'No upcoming service requests.'
+
+# Service Requests
+service_request:
+    title: 'Service request'
+    title_plural: 'Service requests'
+    title_with_id: 'Service request #%id%'
+    new: 'New service request'
+    edit: 'Edit service request'
+    create: 'Create service request'
+    update: 'Update service request'
+    delete_confirm: 'Are you sure you want to delete this service request?'
+    no_requests_found: 'No service requests found.'
+    available_tasks_info: '<strong>Available tasks</strong> are highlighted and can be self-assigned. Your assigned tasks are also shown below.'
+    task_available_alert: '<strong>This task is available!</strong> You can assign it to yourself using the "Self assign" button in the actions panel.'
+    service_details: 'Service details'
+    workflow_history: 'Workflow history'
+    available_actions: 'Available actions'
+    no_actions_available: 'No actions available in current state.'
+    workflow_states: 'Workflow states'
+    not_assigned: 'Not assigned'
+    unassigned: 'Unassigned'
+    not_specified: 'Not specified'
+    available: 'Available'
+    
+    field:
+        house: 'House'
+        service_type: 'Service type'
+        status: 'Status'
+        current_status: 'Current status'
+        priority: 'Priority'
+        scheduled_date: 'Scheduled date'
+        completed_date: 'Completed date'
+        assigned_cleaner: 'Assigned cleaner'
+        estimated_duration: 'Estimated duration (hours)'
+        actual_duration: 'Actual duration'
+        created_by: 'Created by'
+        created_at: 'Created at'
+        updated_at: 'Updated at'
+        description: 'Description'
+        notes: 'Notes'
+        unassigned: 'Unassigned'
+        not_assigned: 'Not assigned'
+        not_specified: 'Not specified'
+        house_placeholder: 'Select a house'
+        service_type_placeholder: 'Select service type'
+        cleaner_placeholder: 'Select a cleaner'
+    
+    section:
+        details: 'Service details'
+        available_actions: 'Available actions'
+        workflow_states: 'Workflow states'
+        workflow_history: 'Workflow history'
+        no_actions: 'No actions available in current state.'
+
+# Houses
+house:
+    title: 'House'
+    title_plural: 'Houses'
+    new: 'New house'
+    edit: 'Edit house'
+    add_new: 'Add new house'
+    create: 'Create house'
+    no_houses_found: 'No houses found.'
+    owner: 'Owner'
+    bedrooms: 'Bedrooms'
+    bathrooms: 'Bathrooms'
+    update: 'Update house'
+    delete_confirm: 'Are you sure you want to delete this house?'
+    no_houses: 'No houses found.'
+    view_details: 'View details'
+
+    field:
+        name: 'Name'
+        address: 'Address'
+        city: 'City'
+        postal_code: 'Postal code'
+        country: 'Country'
+        description: 'Description'
+        bedrooms: 'Bedrooms'
+        bathrooms: 'Bathrooms'
+        square_meters: 'Square meters'
+        owner: 'Owner'
+        co_owners: 'Co-owners'
+        created: 'Created'
+        owner_placeholder: 'Select an owner'
+        co_owners_help: 'Select additional owners who can manage this house'
+    
+    section:
+        information: 'House information'
+        service_requests: 'Service requests'
+        no_requests: 'No service requests for this house yet.'
+        showing_requests: 'Showing %count% of %total% requests'
+
+# Login
+login:
+    title: 'Please sign in'
+    subtitle: 'Sign in to your account'
+    email: 'Email'
+    password: 'Password'
+    sign_in: 'Sign in'
+    error: 'Invalid credentials.'
+
+# Flash Messages
+flash:
+    success:
+        created: '%entity% created successfully.'
+        updated: '%entity% updated successfully.'
+        deleted: '%entity% deleted successfully.'
+        transition: 'Transition "%transition%" applied successfully.'
+    error:
+        transition_not_possible: 'Cannot apply transition "%transition%".'
+        transition_error: 'Error applying transition: %error%'
+        access_denied: 'You do not have access to this %entity%.'
+
+# Validation
+validation:
+    required: 'This field is required.'
+    email: 'Please enter a valid email address.'
+    
+# Common
+common:
+    available: 'Available'
+    or: 'or'
+    hours: 'hours'
+    from: 'From'
+    to: 'To'
+    transition: 'Transition'
+    timestamp: 'Timestamp'
+    id: 'ID'
+    actions: 'Actions'
+    square_meters_unit: 'm²'
+    warning: 'Warning'
+    note: 'Note'
+    danger_zone: 'Danger zone'
+
+user:
+    title: 'User management'
+    action:
+        add_new: 'Add new user'
+        update: 'Update user'
+        create: 'Create user'
+        delete: 'Delete user'
+        edit: 'Edit user'
+    field:
+        id: 'ID'
+        name: 'Name'
+        email: 'Email'
+        phone: 'Phone'
+        roles: 'Roles'
+        status: 'Status'
+        first_name: 'First name'
+        last_name: 'Last name'
+        assigned_roles: 'Assigned roles'
+        password: 'Password'
+        password_placeholder: 'Enter password'
+        password_keep_current: 'Leave empty to keep current password'
+        roles_help: 'Select one or more roles. ROLE_USER is automatically assigned to all users.'
+    status:
+        active: 'Active'
+        inactive: 'Inactive'
+    no_users_found: 'No users found'
+
+    edit:
+        title: 'Edit user'
+        header: 'Edit user: %name%'
+        own_account_warning: 'You are editing your own account. Make sure to keep at least one active administrator in the system. You cannot remove your own admin role or delete yourself if you are the only administrator.'
+        own_account_note: 'This is your own account. Deleting yourself is restricted if you are the only administrator.'
+    new:
+        title: 'Add new user'
+        breadcrumb: 'New user'
+        header: 'Add new user'
+    delete:
+        permanent_warning: 'Deleting a user is permanent and cannot be undone.'
+        confirm: 'Are you sure you want to delete this user?'
+        own_account_restriction: 'You cannot delete yourself if you are the only administrator'
+    section:
+        information: 'User information'
+        roles_permissions: 'Roles & permissions'
+        owned_properties: 'Owned properties'
+    no_properties_owned: 'No properties owned'
+    validation:
+        password_required: 'Please enter a password'
+        password_min_length: 'Your password should be at least {{ limit }} characters'
+    error:
+        cannot_remove_own_admin: 'You cannot remove your own admin role as you are the only administrator.'
+        cannot_delete_only_admin: 'You cannot delete yourself as you are the only administrator.'
